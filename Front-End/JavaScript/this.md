@@ -244,7 +244,9 @@ true
 {constructor: f, sayHi: f, sayBye: f}
 {constructor: f}
 ```
-Derived classes must not return before calling super(), unless they return an Object or have no constructor at all.
+[More details about prototype chain](./PrototypeChain.md)
+
+Derived classes must not return before calling ```super()```, unless they return an Object or have no constructor at all.
 
 ```js
 class Base {}
@@ -334,7 +336,7 @@ console.log(o.f());
 ```
 37
 ```
-
+---
 ```js
 var o = {prop: 37};
 
@@ -353,7 +355,7 @@ console.log(o.b.g());
 37
 42
 ```
-
+---
 ```js
 var o = {f: function() { return this.a + this.b; }};
 var p = Object.create(o);
@@ -362,10 +364,10 @@ p.b = 4;
 
 console.log(p.f());
 ```
-
 ```
 5
 ```
+---
 ```js
 function sum() {
   return this.a + this.b + this.c;
@@ -388,6 +390,7 @@ console.log(o.average, o.sum);
 ```
 2, 6
 ```
+---
 ```js
 function C() {
   this.a = 37;
@@ -408,6 +411,7 @@ console.log(o.a);
 37
 38
 ```
+---
 ```js
 class Car {
   constructor() {
@@ -448,7 +452,7 @@ Hello from Ferrari
 Hello from Tweety
 Bye from Ferrari
 ```
-
+---
 ```js
 let bear = {
   sound: 'roar',
@@ -464,6 +468,7 @@ bearSound();
 ```
 undefined
 ```
+---
 ```js
 'use strict';
 function logThis() {
@@ -475,6 +480,7 @@ new logThis();
 ```
 {desc: "logger"}
 ```
+---
 ```js
 function logThis() {
   console.log(this);
