@@ -36,12 +36,49 @@ console.log(add.apply(o, [10, 20]));
 const fn = add.bind(o, 1, 2);
 console.log(fn());
 ```
-
-
 ```
 16
 34
 7
+```
+#### **Note: bind only works once!**
+```js
+function foo() {
+  return this.a;
+}
+
+var bar = foo.bind({a: 'azerty'});
+console.log(bar()); 
+
+var biz = bar.bind({a: 'yoo'}); 
+console.log(biz()); 
+
+var obj = {
+    a: 37,
+    foo: foo, 
+    bar: bar, 
+    biz: biz
+};
+console.log(obj.a, obj.foo(), obj.bar(), obj.biz());
+```
+```
+azerty
+azerty
+37 37 azerty azerty
+```
+```js
+// How to prints "roar" to the console?
+var sound = 'grunt';
+var bear = { sound: 'roar' };
+function roar() {
+    console.log(this.sound);
+}
+```
+```js
+roar.apply(bear);
+roar.call(bear);
+const fn = roar.bind(bear);
+fn();
 ```
 ```js
 var obj1 = {

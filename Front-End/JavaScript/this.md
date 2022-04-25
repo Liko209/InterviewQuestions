@@ -264,19 +264,232 @@ new Bad(); // ReferenceError
 ```
 **Warning**: Referring to this before calling super() will throw an error.
 
-[More details about call, apply and bind](./call%2Capply%2Cbind.md)
+#### **4 Arrow function** 
+In **arrow functions**, this retains the value of the enclosing lexical context's ```this```. In global code, it will be set to the global object:
 
+```js
+var globalObject = this;
+var foo = (() => this);
+console.log(foo() === globalObject);
+
+// Call as a method of an object
+var obj = {func: foo};
+console.log(obj.func() === globalObject); 
+
+// Attempt to set this using call
+console.log(foo.call(obj) === globalObject); 
+
+// Attempt to set this using bind
+foo = foo.bind(obj);
+console.log(foo() === globalObject); 
+```
+```
+true
+true
+true
+true
+```
+No matter what, foo's ```this``` is set to what it was **when it was created (in the example above, the global object)**. The same applies to arrow functions created inside other functions: their this remains that of the enclosing lexical context.
+
+**Note**: If ```this``` arg is passed to ```call, bind, or apply``` on invocation of an ```arrow function``` it will be **ignored**. You can still prepend arguments to the call, but the first argument ```(thisArg)``` should be set to ```null```.
+```js
+// Create obj with a method bar that returns a function that returns its this. The returned function is created as an arrow function, so its this is permanently bound to the this of its enclosing function. The value of bar can be set in the call, which in turn sets the value of the returned function.
+var obj = {
+  bar: function() {
+    var x = (() => this);
+    return x;
+  }
+};
+
+// Call bar as a method of obj, setting its this to obj
+// Assign a reference to the returned function to fn
+var fn = obj.bar();
+
+// Call fn without setting this, would normally default
+// to the global object or undefined in strict mode
+console.log(fn() === obj); // true
+
+// But caution if you reference the method of obj without calling it
+var fn2 = obj.bar;
+// Calling the arrow function's this from inside the bar method()
+// will now return window, because it follows the this from fn2.
+console.log(fn2()() == window);
+```
+```
+true
+true
+```
+In the above, the function (call it anonymous function A) assigned to obj.bar returns another function (call it anonymous function B) that is created as an arrow function. As a result, function B's ```this``` is permanently set to the ```this``` of ```obj.bar``` (function A) when called. When the returned function (function B) is called, its ```this``` will always be what it was set to initially. In the above code example, function B's ```this``` is set to function A's ```this``` which is ```obj```, so it remains set to ```obj``` even when called in a manner that would normally set its ```this``` to ```undefined``` or the ```global object``` (or any other method as in the previous example in the global execution context).
+## Exercise
+```js
+var o = {
+  prop: 37,
+  f: function() {
+    return this.prop;
+  }
+};
+
+console.log(o.f());
+```
+```
+37
+```
+
+```js
+var o = {prop: 37};
+
+function independent() {
+  return this.prop;
+}
+
+o.f = independent;
+o.b = {g: independent, prop: 42};
+
+
+console.log(o.f());
+console.log(o.b.g());
+```
+```
+37
+42
+```
+
+```js
+var o = {f: function() { return this.a + this.b; }};
+var p = Object.create(o);
+p.a = 1;
+p.b = 4;
+
+console.log(p.f());
+```
+
+```
+5
+```
+```js
+function sum() {
+  return this.a + this.b + this.c;
+}
+
+var o = {
+  a: 1,
+  b: 2,
+  c: 3,
+  get average() {
+    return (this.a + this.b + this.c) / 3;
+  }
+};
+
+Object.defineProperty(o, 'sum', {
+    get: sum, enumerable: true, configurable: true});
+
+console.log(o.average, o.sum);
+```
+```
+2, 6
+```
+```js
+function C() {
+  this.a = 37;
+}
+
+var o = new C();
+console.log(o.a); 
+
+function C2() {
+  this.a = 37;
+  return {a: 38};
+}
+
+o = new C2();
+console.log(o.a);
+```
+```
+37
+38
+```
+```js
+class Car {
+  constructor() {
+    // Bind sayBye but not sayHi to show the difference
+    this.sayBye = this.sayBye.bind(this);
+  }
+  sayHi() {
+    console.log(`Hello from ${this.name}`);
+  }
+  sayBye() {
+    console.log(`Bye from ${this.name}`);
+  }
+  get name() {
+    return 'Ferrari';
+  }
+}
+
+class Bird {
+  get name() {
+    return 'Tweety';
+  }
+}
+
+const car = new Car();
+const bird = new Bird();
+
+// The value of 'this' in methods depends on their caller
+car.sayHi(); // Hello from Ferrari
+bird.sayHi = car.sayHi;
+bird.sayHi(); // Hello from Tweety
+
+// For bound methods, 'this' doesn't depend on the caller
+bird.sayBye = car.sayBye;
+bird.sayBye();
+```
+```
+Hello from Ferrari
+Hello from Tweety
+Bye from Ferrari
+```
+
+```js
+let bear = {
+  sound: 'roar',
+  roar() {
+    console.log(this.sound);
+  },
+};
+
+bear.sound = 'grunt';
+let bearSound = bear.roar;
+bearSound();
+```
+```
+undefined
+```
+```js
+'use strict';
+function logThis() {
+  this.desc = 'logger';
+  console.log(this);
+}
+new logThis();
+```
+```
+{desc: "logger"}
+```
+```js
+function logThis() {
+  console.log(this);
+}
+logThis();
+```
+```
+Object [Window] {} // for browsers
+Object [global] {} // for Node
+```
 ## Summary
-1. Functions that are stored in object properties are called “methods”.
-2. Methods allow objects to “act” like ```object.doSomething()```.
-3. Methods can reference the object as ```this```.
-
 The value of ```this``` is defined **at run-time**.
 
 1. When a function is declared, it may use ```this```, but that ```this``` has no value **until the function is called**.
-2. A function can be copied between objects.
-3. When a function is called in the “method” syntax: ```object.method()```, the value of ```this``` during the call is ```object```.
-
-Please note that ```arrow functions``` are special: they have **no** ```this```. When ```this``` is accessed inside an arrow function, it is taken from outside.
-
-[More details about arrow functions](./arrowFunction.md)
+2. When a function is called in the “method” syntax: ```object.method()```, the value of ```this``` during the call is ```object```, that is what we said ```this``` is always points to the ```object``` before the "dot".
+3. When a function is called in the "global", the value of ```this``` during the call is ```globalThis```, which is ```Window``` for browsers / ```global``` for Node. However, there are some subtle differences in strict mode.
+4. You also can use call, apply and bind to change ```this``` for the function. [More details about call, apply and bind](./call%2Capply%2Cbind.md)
+5.  ```arrow functions``` are special: they have **no** ```this```. When ```this``` is accessed inside an arrow function, it is taken from outside. Moreover, different from the ```this``` of a normal function, the ```this``` of an ```arrow function``` is **NOT** determined at runtime, but by the lexical context in which it was created. [More details about arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions)
