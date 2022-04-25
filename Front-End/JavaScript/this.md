@@ -1,6 +1,6 @@
 ## What is ```this``` in JavaScript
 
-#### **This summary is mainly for my own learning, with many knowledge points and examples from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this) and [JavaScript.info](https://javascript.info/object-methods#this-in-methods)**
+#### **This summary is mainly for my own learning, with many knowledge points and examples from [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this) and [JavaScript.info](https://javascript.info/object-methods)**
 
 
 A function's ```this``` keyword behaves a little differently in JavaScript compared to other languages. It also has some differences between strict mode and non-strict mode.
