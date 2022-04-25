@@ -5,7 +5,7 @@
 
 A function's ```this``` keyword behaves a little differently in JavaScript compared to other languages. It also has some differences between strict mode and non-strict mode.
 
-In most cases, the value of ```this``` is determined by how a function is called (**runtime binding**). It can't be set by assignment during execution, and it may be different each time the function is called. ES5 introduced the ```bind()``` method to **set the value of a function's this regardless of how it's called**, and ES2015 introduced ```arrow functions``` which don't provide their own this binding (it retains the this value of the enclosing lexical context).
+In most cases, the value of ```this``` is determined by how a function is called (**runtime binding**). It can't be set by assignment during execution, and it may be different each time the function is called. ES5 introduced the ```bind()``` method to **set the value of a function's this regardless of how it's called**, and ES2015 introduced ```arrow functions``` which don't provide their own this binding (it retains the ```this``` value of the enclosing lexical context). [More detail about scope and variables hoisting.](./Scope%26VariablesHoisting.md)
 
 ```js
 let obj = {
@@ -322,6 +322,28 @@ true
 true
 ```
 In the above, the function (call it anonymous function A) assigned to obj.bar returns another function (call it anonymous function B) that is created as an arrow function. As a result, function B's ```this``` is permanently set to the ```this``` of ```obj.bar``` (function A) when called. When the returned function (function B) is called, its ```this``` will always be what it was set to initially. In the above code example, function B's ```this``` is set to function A's ```this``` which is ```obj```, so it remains set to ```obj``` even when called in a manner that would normally set its ```this``` to ```undefined``` or the ```global object``` (or any other method as in the previous example in the global execution context).
+
+```js
+const person = {
+    name: 'Li, Ke',
+    age: 25,
+    getName: function(){
+        console.log(`My name is ${this.name}`);
+    },
+    getAge: () => {
+        console.log(`My age is ${this.age}`);
+    },
+}
+
+person.getName();
+person.getAge();
+```
+```
+My name is Li, Ke
+My age is undefined
+```
+
+In the above, the ```this``` of ```person.getName()``` points to the caller, that is the instance of person, thus ```this.name``` = ```'Li, Ke'```. However, ```getAge()``` is defined by ```arrow function```, and ```arrow function``` don't have its own ```this```, it will inherit ```this``` from the outer lexical environment. Therefore, when executing ```person.getAge()```, the lexical environment points to ```window```, but ```window``` don't have an ```age``` attribute, so it will return ```undefined```
 ## Exercise
 ```js
 var o = {
