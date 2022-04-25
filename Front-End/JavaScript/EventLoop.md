@@ -36,7 +36,9 @@ First, line 1-4 will start 5 timers for 5 callback functions of setTimerout(). T
    if the main thread is empty.
 
 Main Thread (running time stack) : []
+
 Task Queue  : [[MicroTasks], [MacroTasks]]
+
 Timer       : timer;
 
 ## Exercise
