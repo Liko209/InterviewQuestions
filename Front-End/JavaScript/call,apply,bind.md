@@ -66,8 +66,8 @@ azerty
 azerty
 37 37 azerty azerty
 ```
+**How to prints "roar" to the console?**
 ```js
-// How to prints "roar" to the console?
 var sound = 'grunt';
 var bear = { sound: 'roar' };
 function roar() {
@@ -80,6 +80,7 @@ roar.call(bear);
 const fn = roar.bind(bear);
 fn();
 ```
+--------------
 ```js
 var obj1 = {
     a: 'obj1: Li, Ke',
