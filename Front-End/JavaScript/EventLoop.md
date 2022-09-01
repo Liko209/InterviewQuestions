@@ -2,12 +2,14 @@
 ```js
 for (var i = 0; i < 5; i++) {
     setTimeout(() => {
-        console.log(i);∏
+        console.log(i);
+    )}
 }
+console.log("Hello World!");
+
 // for (let i = 0; i < 10000; i++) {
 //     console.log(" ");
 // }
-console.log("Hello World!");
 ```
 ```
 Hello World!
