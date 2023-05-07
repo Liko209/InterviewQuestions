@@ -1,0 +1,1 @@
+https://josephcardillo.medium.com/the-difference-between-function-and-block-scope-in-javascript-4296b2322abe
