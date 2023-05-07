@@ -2,3 +2,5 @@
 *.fyc
 
 test.*
+
+node_modules
